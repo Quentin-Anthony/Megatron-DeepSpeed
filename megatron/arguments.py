@@ -379,6 +379,9 @@ def _add_network_size_args(parser):
                        help='Force syncing duplicated params across TP ranks in forward. '
                        'This is a workaround for an unresolved bug leading to TP ranks '
                        'getting out of sync with each other.')
+    group.add_argument('--disable-mem-efficient-ln', action='store_false', 
+                       help='Disable the memory-efficient fused LayerNorm '
+                       'optimization introduced in https://github.com/NVIDIA/apex/pull/1715')
     group.add_argument('--apply-residual-connection-post-layernorm',
                        action='store_true',
                        help='If set, use original BERT residula connection '

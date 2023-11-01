@@ -85,6 +85,7 @@ class MixedFusedLayerNorm(torch.nn.Module):
 
     args = get_args()
     self.layernorm_tp_auto_sync = args.sync_tp_duplicated_parameters
+    self.mem_efficient_ln = not args.disable_mem_efficient_ln
 
     self.use_meg_ds_fused_layer_norm = (
       args.bf16 # Current Meg-DS cuda kernel has better throughput than torch.nn.LayerNorm
@@ -106,6 +107,6 @@ class MixedFusedLayerNorm(torch.nn.Module):
 
     if self.use_meg_ds_fused_layer_norm:
         return FusedLayerNormAffineFunction.apply(
-            input, self.weight, self.bias, self.normalized_shape, self.eps)
+            input, self.weight, self.bias, self.normalized_shape, self.eps, self.mem_efficient_ln)
     else:
         return F.layer_norm(input, self.normalized_shape, self.weight, self.bias)
